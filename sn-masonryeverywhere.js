@@ -29,6 +29,7 @@
         link.rel = 'stylesheet';
         link.href = href;
         document.head.appendChild(link);
+        console.log('CSS loaded:', href);
     }
 
     // Function to dynamically load JS
@@ -37,15 +38,23 @@
         script.src = src;
         script.onload = callback;
         document.head.appendChild(script);
+        console.log('JS loaded:', src);
     }
 
-    // Function to check if the selector exists and initialize FlexMasonry
-    function initFlexMasonry(selector, options) {
+    // Function to check if all selectors exist and initialize FlexMasonry
+    function initFlexMasonry(selectors, options) {
+        console.log('Checking for selectors:', selectors);
+        var selectorArray = selectors.split(',');
         var interval = setInterval(function() {
-            if (document.querySelector(selector)) {
+            var allElementsExist = selectorArray.every(function(selector) {
+                return document.querySelector(selector.trim());
+            });
+            
+            if (allElementsExist) {
                 clearInterval(interval);
                 clearTimeout(timeout);
-
+                console.log('All selectors found. Initializing FlexMasonry with options:', options);
+                
                 // Default options
                 var defaultOptions = {
                     responsive: true,
@@ -60,23 +69,29 @@
                 // Merge user options with default options
                 var finalOptions = Object.assign({}, defaultOptions, options);
 
-                FlexMasonry.init(selector, finalOptions);
+                selectorArray.forEach(function(selector) {
+                    FlexMasonry.init(selector.trim(), finalOptions);
+                    console.log('FlexMasonry initialized for selector:', selector.trim());
+                });
             }
         }, 100); // Check every 100 milliseconds
 
         var timeout = setTimeout(function() {
             clearInterval(interval);
+            console.log('Timeout reached. Not all selectors were found:', selectors);
         }, 3000); // Stop checking after 3 seconds
     }
 
     // Initialization function
-    window.snMasonry = function(selector, options) {
+    window.snMasonry = function(selectors, options) {
+        console.log('snMasonry called with selectors:', selectors, 'and options:', options);
         // Load the CSS and JS files
         loadCSS('https://unpkg.com/flexmasonry/dist/flexmasonry.css');
         loadJS('https://unpkg.com/flexmasonry/dist/flexmasonry.js', function() {
             // Initialize FlexMasonry once the script is loaded
-            document.addEventListener('DOMContentLoaded', function() {
-                initFlexMasonry(selector, options);
+            window.addEventListener('load', function() {
+                console.log('Window loaded. Initializing FlexMasonry.');
+                initFlexMasonry(selectors, options);
             });
         });
     }
