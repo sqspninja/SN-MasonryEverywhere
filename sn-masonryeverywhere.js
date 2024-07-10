@@ -40,20 +40,27 @@
     }
 
     // Function to check if the selector exists and initialize FlexMasonry
-    function initFlexMasonry(selector) {
+    function initFlexMasonry(selector, options) {
         var interval = setInterval(function() {
             if (document.querySelector(selector)) {
                 clearInterval(interval);
                 clearTimeout(timeout);
-                FlexMasonry.init(selector, {
+
+                // Default options
+                var defaultOptions = {
                     responsive: true,
                     breakpointCols: {
                         'min-width: 1200px': 5, // Desktop
-                        'min-width: 992px': 4, // Laptop
-                        'min-width: 768px': 3, // Tablet
-                        'min-width: 576px': 1 // Mobile
+                        'min-width: 992px': 4,  // Laptop
+                        'min-width: 768px': 3,  // Tablet
+                        'min-width: 576px': 1   // Mobile
                     }
-                });
+                };
+
+                // Merge user options with default options
+                var finalOptions = Object.assign({}, defaultOptions, options);
+
+                FlexMasonry.init(selector, finalOptions);
             }
         }, 100); // Check every 100 milliseconds
 
@@ -63,13 +70,13 @@
     }
 
     // Initialization function
-    window.snMasonry = function(selector) {
+    window.snMasonry = function(selector, options) {
         // Load the CSS and JS files
         loadCSS('https://unpkg.com/flexmasonry/dist/flexmasonry.css');
         loadJS('https://unpkg.com/flexmasonry/dist/flexmasonry.js', function() {
             // Initialize FlexMasonry once the script is loaded
             document.addEventListener('DOMContentLoaded', function() {
-                initFlexMasonry(selector);
+                initFlexMasonry(selector, options);
             });
         });
     }
