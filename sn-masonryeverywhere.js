@@ -23,7 +23,7 @@
  */
 
 (function() {
-    console.log('Script loaded');
+    console.log('Script loaded completely');
 
     // Function to dynamically load CSS
     function loadCSS(href) {
