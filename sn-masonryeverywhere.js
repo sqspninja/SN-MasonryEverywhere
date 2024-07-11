@@ -23,6 +23,8 @@
  */
 
 (function() {
+    console.log('Script loaded');
+
     // Function to dynamically load CSS
     function loadCSS(href) {
         var link = document.createElement('link');
@@ -88,11 +90,19 @@
         // Load the CSS and JS files
         loadCSS('https://unpkg.com/flexmasonry/dist/flexmasonry.css');
         loadJS('https://unpkg.com/flexmasonry/dist/flexmasonry.js', function() {
+            console.log('FlexMasonry script loaded');
             // Initialize FlexMasonry once the script is loaded
             window.addEventListener('load', function() {
                 console.log('Window loaded. Initializing FlexMasonry.');
                 initFlexMasonry(selectors, options);
             });
         });
+    }
+
+    // Automatically initialize if the selectors and options variables are defined
+    if (typeof masonrySelectors !== 'undefined' && typeof masonryOptions !== 'undefined') {
+        snMasonry(masonrySelectors, masonryOptions);
+    } else {
+        console.log('masonrySelectors or masonryOptions not defined');
     }
 })();
